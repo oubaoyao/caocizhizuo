@@ -28,7 +28,7 @@ public class AppreciatePanel : BasePanel
         ImageGroup = FindTool.FindChildNode(transform, "ImageGroup").GetComponentsInChildren<RawImage>();
         ChooseIngImage = FindTool.FindChildNode(transform, "ChooseIng");
 
-        DisplayRawImage = FindTool.FindChildComponent<RawImage>(transform, "DisplayRawImage/DisplayImage");
+        DisplayRawImage = FindTool.FindChildComponent<RawImage>(transform, "xiangkuang/DisplayImage");
     }
 
     public override void InitEvent()
@@ -53,7 +53,6 @@ public class AppreciatePanel : BasePanel
     public override void Open()
     {
         base.Open();
-        ChooseIngImage.GetComponent<Image>().enabled = false;
         ChooseIngImage.localPosition = new Vector3(-268f, -372f);
         Index = 0;
 
@@ -73,13 +72,15 @@ public class AppreciatePanel : BasePanel
                 }
             }
             ImageAddListen(ImageButtonGroup, Index);
+            DisplayRawImage.texture = WorksDisplayTextureArray[0];
         }
+
     }
 
     void InitButtons(Button btn, int i, int index)
     {
         btn.onClick.AddListener(delegate () {
-            ChooseIngImage.GetComponent<Image>().enabled = true;
+            
             if(i + index < WorksDisplayTextureArray.Length && WorksDisplayTextureArray != null)
             {
                 DisplayRawImage.texture = WorksDisplayTextureArray[i + index];

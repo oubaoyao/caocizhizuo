@@ -39,8 +39,8 @@ public class ModelControl : MonoBehaviour
 
     private void ChangeKey(int index,int IsAdd)
     {
-        float Newvalue = curve.keys[index].value + 0.02f* IsAdd;
-        if(Newvalue <= 0.65)
+        float Newvalue = curve.keys[index].value + 0.04f* IsAdd;
+        if(Newvalue <= 0.75)
         {
             Debug.Log("value已经是最小，不能再小了！！");
             return;
@@ -120,7 +120,7 @@ public class ModelControl : MonoBehaviour
     {
         if(IsGameStart)
         {
-            Model.transform.Rotate(Vector3.up);
+            Model.transform.Rotate(Vector3.up*25);
 
             if (Input.GetMouseButtonUp(0))
             {

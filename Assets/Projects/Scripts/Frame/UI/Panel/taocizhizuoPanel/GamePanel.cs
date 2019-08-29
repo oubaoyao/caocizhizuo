@@ -40,7 +40,6 @@ public class GamePanel : BasePanel
         ConcirmButton.onClick.AddListener(() => {
             CloseTips();
             ModelControl.Instance.IsGameStart = false;
-            ModelControl.Instance.CloseModel();
             string ImgName = Time.time.ToString();
             WorksDataControl.Instance.WorksDisplayPath.Add(ImgName);
             string str = Application.streamingAssetsPath + "/" + SaveImaPath + "/" + ImgName + ".jpg";
@@ -49,23 +48,27 @@ public class GamePanel : BasePanel
         });
 
         tips1Button.onClick.AddListener(() => {
-            tips1.DOFillAlpha(0, 0.5f, TweenMode.NoUnityTimeLineImpact);
+            tips1.DOFillAlpha(0, 0.5f, TweenMode.NoUnityTimeLineImpact).OnComplete(()=> {
+                if (tips2.alpha == 0)
+                {
+                    Handtips.gameObject.GetComponent<Animation>().Stop();
+                    Handtips.DOFillAlpha(0, 0.5f, TweenMode.NoUnityTimeLineImpact);
+                }
+            });
             tips1.blocksRaycasts = false;
-            if(tips2.alpha == 0)
-            {
-                Handtips.gameObject.GetComponent<Animation>().Stop();
-                Handtips.DOFillAlpha(0, 0.5f, TweenMode.NoUnityTimeLineImpact);
-            }
+
         });
 
         tips2Button.onClick.AddListener(() => {
-            tips2.DOFillAlpha(0, 0.5f, TweenMode.NoUnityTimeLineImpact);
+            tips2.DOFillAlpha(0, 0.5f, TweenMode.NoUnityTimeLineImpact).OnComplete(()=> {
+                if (tips1.alpha == 0)
+                {
+                    Handtips.gameObject.GetComponent<Animation>().Stop();
+                    Handtips.DOFillAlpha(0, 0.5f, TweenMode.NoUnityTimeLineImpact);
+                }
+            });
             tips2.blocksRaycasts = false;
-            if (tips1.alpha == 0)
-            {
-                Handtips.gameObject.GetComponent<Animation>().Stop();
-                Handtips.DOFillAlpha(0, 0.5f, TweenMode.NoUnityTimeLineImpact);
-            }
+
         });
     }
 
@@ -122,9 +125,9 @@ public class GamePanel : BasePanel
     {
         yield return new WaitForEndOfFrame();
         //需要正确设置好图片保存格式
-        Texture2D t = new Texture2D(248, 248, TextureFormat.RGB24, false);
+        Texture2D t = new Texture2D(306, 306, TextureFormat.RGB24, false);
         //按照设定区域读取像素；注意是以左下角为原点读取
-        t.ReadPixels(new Rect(0.25f * Screen.width, 0.4f * Screen.height, 248, 248), 0, 0);
+        t.ReadPixels(new Rect(0.2f * Screen.width, 0.32f * Screen.height, 306, 306), 0, 0);
         t.Apply();
         WorksDataControl.Instance.WorksDisplayTexture.Add(t);
         //二进制转换

@@ -24,6 +24,7 @@ public class CompletePanel : BasePanel
         base.InitEvent();
         RemakeButtom.onClick.AddListener(() => {
             Hide();
+            
             //GamePanel.CurrentModel.gameObject.SetActive(true);
             //ModelControl.Instance.ResetMaterial();
             gamepanel.Open();

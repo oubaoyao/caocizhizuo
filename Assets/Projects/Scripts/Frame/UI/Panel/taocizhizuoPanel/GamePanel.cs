@@ -9,7 +9,6 @@ public class GamePanel : BasePanel
 {
     public Button BackButton, ConcirmButton, tips1Button, tips2Button;
     public CanvasGroup tips1, tips2, Handtips;
-    public Transform dizuo;
     private string SaveImaPath = "saveImage";
     public CompletePanel completePanel;
 
@@ -26,7 +25,6 @@ public class GamePanel : BasePanel
         tips1Button = tips1.gameObject.GetComponent<Button>();
         tips2Button = tips2.gameObject.GetComponent<Button>();
 
-        dizuo = FindTool.FindChildNode(transform, "dizuo");
         completePanel = FindTool.FindChildComponent<CompletePanel>(transform, "CompletePanel");
     }
 
@@ -70,14 +68,6 @@ public class GamePanel : BasePanel
             tips2.blocksRaycasts = false;
 
         });
-    }
-
-    private void Update()
-    {
-        //if(ModelControl.Instance.IsGameStart)
-        //{
-        //    dizuo.Rotate(Vector3.right);
-        //}
     }
 
     public override void Open()

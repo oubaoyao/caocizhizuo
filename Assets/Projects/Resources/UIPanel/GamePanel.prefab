@@ -1344,6 +1344,7 @@ MonoBehaviour:
   AppreciateButton: {fileID: 119034698647285375}
   ReturnButton: {fileID: 6817453615092357342}
   gamepanel: {fileID: 3434895999166649701}
+  starAniamtor: {fileID: 0}
 --- !u!225 &2519033079322263014
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -1352,7 +1353,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5725614966605900586}
   m_Enabled: 1
-  m_Alpha: 1
+  m_Alpha: 0
   m_Interactable: 1
   m_BlocksRaycasts: 0
   m_IgnoreParentGroups: 0
@@ -1558,6 +1559,7 @@ GameObject:
   - component: {fileID: 168927685405643660}
   - component: {fileID: 4010343502364496508}
   - component: {fileID: 3357063608470995133}
+  - component: {fileID: 6917711801897620167}
   m_Layer: 0
   m_Name: StarAnima
   m_TagString: Untagged
@@ -1581,8 +1583,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 100, y: 100}
+  m_AnchoredPosition: {x: 0, y: 128}
+  m_SizeDelta: {x: 1034, y: 504}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4010343502364496508
 CanvasRenderer:
@@ -1612,7 +1614,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: ad3b94afcf5109244b63b42f5bd0a2d9, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1621,3 +1623,22 @@ MonoBehaviour:
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
+--- !u!95 &6917711801897620167
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8281999244123134122}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 6f2a9d57afd5b4c43b8c916774d59c61, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0

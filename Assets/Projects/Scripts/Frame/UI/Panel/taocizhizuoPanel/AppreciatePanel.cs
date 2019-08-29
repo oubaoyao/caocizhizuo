@@ -44,7 +44,7 @@ public class AppreciatePanel : BasePanel
         });
 
         BackButton.onClick.AddListener(() => {
-
+            AudioManager.PlayAudio("按键声音", transform, MTFrame.MTAudio.AudioEnunType.Effset);
             TCZZState.SwitchPanel(MTFrame.MTEvent.SwitchPanelEnum.StartMenuPanel);
 
         });
@@ -85,7 +85,7 @@ public class AppreciatePanel : BasePanel
             {
                 DisplayRawImage.texture = WorksDisplayTextureArray[i + index];
             }
-           
+            AudioManager.PlayAudio("按键声音", transform, MTFrame.MTAudio.AudioEnunType.Effset);
             ChooseIngImage.localPosition = new Vector3(ChooseIngImageX[i], -372f, 0);
         });
     }

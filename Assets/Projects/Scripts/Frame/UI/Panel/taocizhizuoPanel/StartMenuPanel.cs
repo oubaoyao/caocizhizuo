@@ -23,6 +23,7 @@ public class StartMenuPanel : BasePanel
         base.InitEvent();
         PlayButton.onClick.AddListener(() =>
         {
+            AudioManager.PlayAudio("按键声音", transform, MTFrame.MTAudio.AudioEnunType.Effset);
             StartButton.SetBool("start", false);
             StartButton.SetBool("stop", true);
             TCZZState.SwitchPanel(SwitchPanelEnum.GamePanel);
@@ -44,5 +45,13 @@ public class StartMenuPanel : BasePanel
         base.Hide();
         tiltleAnimator.SetBool("newstate-tiltle", false);
         tiltleAnimator.SetBool("loopertiltle-Newstate", true);
+    }
+
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.L))
+        {
+            AudioManager.PlayAudio("按键声音", transform, MTFrame.MTAudio.AudioEnunType.Effset);
+        }
     }
 }

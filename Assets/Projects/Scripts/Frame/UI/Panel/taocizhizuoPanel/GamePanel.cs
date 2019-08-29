@@ -32,11 +32,13 @@ public class GamePanel : BasePanel
     {
         base.InitEvent();
         BackButton.onClick.AddListener(() => {
+            AudioManager.PlayAudio("按键声音", transform, MTFrame.MTAudio.AudioEnunType.Effset);
             TCZZState.SwitchPanel(SwitchPanelEnum.StartMenuPanel);
         });
 
         ConcirmButton.onClick.AddListener(() => {
             CloseTips();
+            AudioManager.PlayAudio("按键声音", transform, MTFrame.MTAudio.AudioEnunType.Effset);
             ModelControl.Instance.IsGameStart = false;
             string ImgName = Time.time.ToString();
             WorksDataControl.Instance.WorksDisplayPath.Add(ImgName);

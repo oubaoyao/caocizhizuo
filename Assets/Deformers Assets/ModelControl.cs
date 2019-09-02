@@ -217,31 +217,36 @@ public class ModelControl : MonoBehaviour
                 {
                     if (secent.y < first.y)
                     {
-                        Vector3 temp = Model.transform.localScale;
-                        temp -= new Vector3(0, 0.1f, 0);
-                        if (temp.y < 0.6)
+                        //Vector3 temp = Model.transform.localScale;
+                        //temp -= new Vector3(0, 0.1f, 0);
+                        float temp = Model.transform.localScale.y;
+                        temp -= 0.1f;
+                        if (temp < 0.6)
                         {
-                            Model.transform.localScale = new Vector3(1.5f, 0.6f, 1.5f);
+                            //Model.transform.localScale = new Vector3(1.5f, 0.6f, 1.5f);
+                            Model.transform.DOSizeY(0.6f, 1.0f, TweenMode.NoUnityTimeLineImpact);
                         }
                         else
                         {
                             //transform.localScale = temp;
-                            Model.transform.localScale = Vector3.Lerp(Model.transform.localScale, temp, 1.0f);
-                            
+                            //Model.transform.localScale = Vector3.Lerp(Model.transform.localScale, temp, 1.0f);
+                            Model.transform.DOSizeY(temp, 1.0f, TweenMode.NoUnityTimeLineImpact);
                         }
                     }
 
                     if (secent.y > first.y)
                     {
-                        Vector3 temp = Model.transform.localScale;
-                        temp += new Vector3(0, 0.1f, 0);
-                        if (temp.y > 1.5f)
+                        float temp = Model.transform.localScale.y;
+                        temp += 0.1f;
+                        if (temp > 1.5f)
                         {
-                            Model.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+                            //Model.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+                            Model.transform.DOSizeY(1.5f, 1.0f, TweenMode.NoUnityTimeLineImpact);
                         }
                         else
                         {
-                            Model.transform.localScale = Vector3.Lerp(Model.transform.localScale, temp, 1.0f);
+                            //Model.transform.localScale = Vector3.Lerp(Model.transform.localScale, temp, 1.0f);
+                            Model.transform.DOSizeY(temp, 1.0f, TweenMode.NoUnityTimeLineImpact);
                         }
                     }
                 }

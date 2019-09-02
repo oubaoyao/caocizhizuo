@@ -115,10 +115,7 @@ public class TimeTool : IMainUpdate, IDisposable
 
     }
 
-    internal void AddDelayed(TimeDownType noUnityTimeLineImpact, Action closeTips)
-    {
-        throw new NotImplementedException();
-    }
+
 
     /// <summary>
     /// 停止延时对象

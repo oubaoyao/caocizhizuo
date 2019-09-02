@@ -24,7 +24,7 @@ public class ModelControl : MonoBehaviour
     private Vector3 first= Vector3.zero,secent=Vector3.zero;
     private int CurveNumber = -1,EdgeNumber = -1;
     private float AreaSize = 0.2f;
-    public bool IsGameStart;
+    public bool IsGameStart,IsRight,IsLeft;
 
     private void Awake()
     {
@@ -34,7 +34,7 @@ public class ModelControl : MonoBehaviour
     void Start()
     {
         curve = Model.GetComponent<FlareDeformer>().Refinecurve;
-        IsGameStart = false;
+        IsGameStart = IsRight = IsLeft = false;
     }
 
     private void ChangeKey(int index,int IsAdd)
@@ -191,11 +191,26 @@ public class ModelControl : MonoBehaviour
                     {
                         if(CurveNumber != -1)
                         {
-                            ChangeKey(CurveNumber, -1);
+                            if(IsLeft == true)
+                            {
+                                ChangeKey(CurveNumber, 1);
+                            }
+                            else if(IsRight == true)
+                            {
+                                ChangeKey(CurveNumber, -1);
+                            }
+                            
                         }
                         if (EdgeNumber != -1)
                         {
-                            ChangeEdge(EdgeNumber, -1);
+                            if (IsLeft == true)
+                            {
+                                ChangeEdge(EdgeNumber, 1);
+                            }
+                            else if (IsRight == true)
+                            {
+                                ChangeEdge(EdgeNumber, -1);
+                            }
                         }
                         Debug.Log("向左");
                     }
@@ -204,11 +219,25 @@ public class ModelControl : MonoBehaviour
                     {
                         if(CurveNumber != -1)
                         {
-                            ChangeKey(CurveNumber, 1);
+                            if (IsLeft == true)
+                            {
+                                ChangeKey(CurveNumber, -1);
+                            }
+                            else if (IsRight == true)
+                            {
+                                ChangeKey(CurveNumber, 1);
+                            }
                         }
                         if(EdgeNumber != -1)
                         {
-                            ChangeEdge(EdgeNumber, 1);
+                            if (IsLeft == true)
+                            {
+                                ChangeEdge(EdgeNumber, -1);
+                            }
+                            else if (IsRight == true)
+                            {
+                                ChangeEdge(EdgeNumber, 1);
+                            }
                         }
                         Debug.Log("向右");
                     }
@@ -254,6 +283,7 @@ public class ModelControl : MonoBehaviour
                 first = secent;
                 CurveNumber = -1;
                 EdgeNumber = -1;
+                IsRight = IsLeft = false;
                 //Debug.Log("鼠标抬起");
             }
 
@@ -264,8 +294,16 @@ public class ModelControl : MonoBehaviour
                 RaycastHit mHit;
                 if (Physics.Raycast(mRay, out mHit))
                 {
-                    //Debug.Log("hit Point" + mHit.point);
+                    Debug.Log("hit Point" + mHit.point);
                     //Debug.Log("LocalPos:" + Model.transform.InverseTransformPoint(mHit.point));
+                    if(mHit.point.x > 0)
+                    {
+                        IsRight = true;
+                    }
+                    else if(mHit.point.x < 0)
+                    {
+                        IsLeft = true;
+                    }
                     Vector3 relativeVector3 = Model.transform.InverseTransformPoint(mHit.point);
 
                     float Proportion = (relativeVector3.y - 0.2f) / (5.4f - 0.2f);

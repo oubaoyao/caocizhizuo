@@ -15,6 +15,7 @@ public class AppreciatePanel : BasePanel
     private RawImage DisplayRawImage;
 
     private int Index = 0;
+    private int CurrentModelNumber = 0;
 
     public override void InitFind()
     {
@@ -73,6 +74,7 @@ public class AppreciatePanel : BasePanel
             }
             ImageAddListen(ImageButtonGroup, Index);
             DisplayRawImage.texture = WorksDisplayTextureArray[WorksDisplayTextureArray.Length - 1];
+            CurrentModelNumber = WorksDisplayTextureArray.Length - 1;
         }
 
     }
@@ -84,6 +86,7 @@ public class AppreciatePanel : BasePanel
             if(i + index < WorksDisplayTextureArray.Length && WorksDisplayTextureArray != null)
             {
                 DisplayRawImage.texture = WorksDisplayTextureArray[WorksDisplayTextureArray.Length - 1 - (i + index)];
+                CurrentModelNumber = WorksDisplayTextureArray.Length - 1 - (i + index);
             }
             AudioManager.PlayAudio("按键声音", transform, MTFrame.MTAudio.AudioEnunType.Effset);
             ChooseIngImage.localPosition = new Vector3(ChooseIngImageX[i], -372f, 0);
@@ -120,6 +123,8 @@ public class AppreciatePanel : BasePanel
                 }
             }
             ImageAddListen(ImageButtonGroup, Index);
+            CurrentModelNumber++;
+            DisplayRawImage.texture = WorksDisplayTextureArray[CurrentModelNumber];
         }
 
     }
@@ -142,6 +147,8 @@ public class AppreciatePanel : BasePanel
                 }
             }
             ImageAddListen(ImageButtonGroup, Index);
+            CurrentModelNumber--;
+            DisplayRawImage.texture = WorksDisplayTextureArray[ CurrentModelNumber];
         }
 
     }

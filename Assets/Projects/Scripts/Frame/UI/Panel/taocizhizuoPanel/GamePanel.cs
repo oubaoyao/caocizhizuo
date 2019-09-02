@@ -4,6 +4,7 @@ using UnityEngine;
 using MTFrame;
 using UnityEngine.UI;
 using MTFrame.MTEvent;
+using System;
 
 public class GamePanel : BasePanel
 {
@@ -79,11 +80,14 @@ public class GamePanel : BasePanel
         ModelControl.Instance.IsGameStart = true;
         ModelControl.Instance.ResetModel();
         ModelControl.Instance.OpenModel();
+        TimeTool.Instance.Remove(TimeDownType.NoUnityTimeLineImpact, CloseTips);
+        TimeTool.Instance.AddDelayed(TimeDownType.NoUnityTimeLineImpact, 15, CloseTips);
     }
 
     public override void Hide()
     {
         base.Hide();
+        
         ModelControl.Instance.IsGameStart = false;
         ModelControl.Instance.CloseModel();
         CloseTips();

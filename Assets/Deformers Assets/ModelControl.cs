@@ -18,12 +18,12 @@ public class ModelControl : MonoBehaviour
 {
     public static ModelControl Instance;
 
-    public GameObject Model;
+    public GameObject Model,dipan;
     public AnimationCurve curve;
     public List<CurveData> curveDatas = new List<CurveData>();
     private Vector3 first= Vector3.zero,secent=Vector3.zero;
-    private int CurveNumber = -1;
-    private float AreaSize = 0.15f;
+    private int CurveNumber = -1,EdgeNumber = -1;
+    private float AreaSize = 0.2f;
     public bool IsGameStart;
 
     private void Awake()
@@ -39,13 +39,34 @@ public class ModelControl : MonoBehaviour
 
     private void ChangeKey(int index,int IsAdd)
     {
-        float Newvalue = curve.keys[index].value + 0.04f* IsAdd;
-        if(Newvalue <= 0.75)
+        float AddValue = 0;
+        if(curve.keys[index].value < 1)
+        {
+            AddValue = 0.2f;
+        }
+        else if(curve.keys[index].value == 1)
+        {
+            if(IsAdd == -1)
+            {
+                AddValue = 0.2f;
+            }
+            else if(IsAdd == 1)
+            {
+                AddValue = 0.1f;
+            }       
+        }
+        else if(curve.keys[index].value > 1)
+        {
+            AddValue = 0.1f;
+        }
+
+        float Newvalue = curve.keys[index].value + AddValue * IsAdd;
+        if(Newvalue <= 0.4)
         {
             Debug.Log("value已经是最小，不能再小了！！");
             return;
         }
-        if(Newvalue >= 1)
+        if(Newvalue == 1)
         {
             foreach ( CurveData item in curveDatas)
             {
@@ -85,21 +106,56 @@ public class ModelControl : MonoBehaviour
             return;
             
         }
+        if(Newvalue >= 1.4)
+        {
+            Debug.Log("value已经是最大，不能再大了！！");
+            return;
+        }
+
         float NewTime = curve.keys[index].time;
         Debug.Log("当前value得值====" + Newvalue);
         Keyframe centerkey2 = new Keyframe(time: NewTime, Newvalue);
         curve.MoveKey(index, centerkey2);
     }
 
+    private void ChangeEdge(int index,int Isadd)
+    {
+        float Newvalue = curve.keys[index].value + 0.1f * Isadd;
+        if(Newvalue >= 1.4f )
+        {
+            Newvalue = 1.4f;
+        }
+        else if(Newvalue <= 0.5f)
+        {
+            Newvalue = 0.5f;
+        }
+        float NewTime = curve.keys[index].time;
+        Keyframe keyframe = new Keyframe(time: NewTime, Newvalue);
+        curve.MoveKey(index, keyframe);
+    }
+
     public void ResetModel()
     {
         if (curve.keys.Length - 2 <= 0)
+        {
+            Keyframe centerkey2 = new Keyframe(0, 1);
+            Debug.Log(curve.keys[0].time);
+            curve.MoveKey(0, centerkey2);
+            centerkey2 = new Keyframe(1, 1);
+            curve.MoveKey(1, centerkey2);
             return;
+        }
+            
         int curvelenth = curve.keys.Length - 2;
         for (int i = 0; i < curvelenth; i++)
         {
             curve.RemoveKey(1);
         }
+        Keyframe centerkey3 = new Keyframe(0, 1);
+        Debug.Log(curve.keys[0].time);
+        curve.MoveKey(0, centerkey3);
+        centerkey3 = new Keyframe(1, 1);
+        curve.MoveKey(1, centerkey3);
         curveDatas.Clear();
         CurveNumber = -1;
         Model.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
@@ -108,11 +164,13 @@ public class ModelControl : MonoBehaviour
     public void OpenModel()
     {
         Model.transform.gameObject.SetActive(true);
+        dipan.transform.gameObject.SetActive(true);
     }
 
     public void CloseModel()
     {
         Model.transform.gameObject.SetActive(false);
+        dipan.transform.gameObject.SetActive(false);
     }
 
     // Update is called once per frame
@@ -121,6 +179,7 @@ public class ModelControl : MonoBehaviour
         if(IsGameStart)
         {
             Model.transform.Rotate(Vector3.up*25);
+            dipan.transform.Rotate(Vector3.forward * 25);
 
             if (Input.GetMouseButtonUp(0))
             {
@@ -128,15 +187,29 @@ public class ModelControl : MonoBehaviour
 
                 if (Mathf.Abs(first.x - secent.x) > Mathf.Abs(first.y - secent.y))
                 {
-                    if (secent.x < first.x && CurveNumber != -1)
+                    if (secent.x < first.x)
                     {
-                        ChangeKey(CurveNumber, -1);
+                        if(CurveNumber != -1)
+                        {
+                            ChangeKey(CurveNumber, -1);
+                        }
+                        if (EdgeNumber != -1)
+                        {
+                            ChangeEdge(EdgeNumber, -1);
+                        }
                         Debug.Log("向左");
                     }
 
-                    if (secent.x > first.x && CurveNumber != -1)
+                    if (secent.x > first.x )
                     {
-                        ChangeKey(CurveNumber, 1);
+                        if(CurveNumber != -1)
+                        {
+                            ChangeKey(CurveNumber, 1);
+                        }
+                        if(EdgeNumber != -1)
+                        {
+                            ChangeEdge(EdgeNumber, 1);
+                        }
                         Debug.Log("向右");
                     }
                 }
@@ -145,22 +218,23 @@ public class ModelControl : MonoBehaviour
                     if (secent.y < first.y)
                     {
                         Vector3 temp = Model.transform.localScale;
-                        temp -= new Vector3(0, 0.05f, 0);
-                        if (temp.y < 1)
+                        temp -= new Vector3(0, 0.1f, 0);
+                        if (temp.y < 0.6)
                         {
-                            Model.transform.localScale = new Vector3(1.5f, 1.0f, 1.5f);
+                            Model.transform.localScale = new Vector3(1.5f, 0.6f, 1.5f);
                         }
                         else
                         {
                             //transform.localScale = temp;
                             Model.transform.localScale = Vector3.Lerp(Model.transform.localScale, temp, 1.0f);
+                            
                         }
                     }
 
                     if (secent.y > first.y)
                     {
                         Vector3 temp = Model.transform.localScale;
-                        temp += new Vector3(0, 0.05f, 0);
+                        temp += new Vector3(0, 0.1f, 0);
                         if (temp.y > 1.5f)
                         {
                             Model.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
@@ -174,7 +248,8 @@ public class ModelControl : MonoBehaviour
 
                 first = secent;
                 CurveNumber = -1;
-                Debug.Log("鼠标抬起");
+                EdgeNumber = -1;
+                //Debug.Log("鼠标抬起");
             }
 
             if (Input.GetMouseButtonDown(0))
@@ -185,7 +260,7 @@ public class ModelControl : MonoBehaviour
                 if (Physics.Raycast(mRay, out mHit))
                 {
                     //Debug.Log("hit Point" + mHit.point);
-                    //Debug.Log("LocalPos:" + transform.InverseTransformPoint(mHit.point));
+                    //Debug.Log("LocalPos:" + Model.transform.InverseTransformPoint(mHit.point));
                     Vector3 relativeVector3 = Model.transform.InverseTransformPoint(mHit.point);
 
                     float Proportion = (relativeVector3.y - 0.2f) / (5.4f - 0.2f);
@@ -195,14 +270,26 @@ public class ModelControl : MonoBehaviour
 
                     if (Time_leftkey <= 0)
                     {
-                        Time_leftkey = 0;
+                        Time_leftkey = 0.15f;
                     }
 
                     if (Time_rightkey >= 1)
                     {
-                        Time_rightkey = 1;
+                        Time_rightkey = 0.9f;
                     }
 
+                    if(Proportion > 0.9 )
+                    {
+                        EdgeNumber = curve.keys.Length - 1;
+                        return;
+                    }
+                    else if(Proportion < 0.15)
+                    {
+                        EdgeNumber = 0;
+                        return;
+                    }
+
+                    Debug.Log("1111");
                     if (curveDatas.Count > 0)
                     {
                         for (int i = 0; i < curveDatas.Count; i++)
@@ -255,15 +342,15 @@ public class ModelControl : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            OpenModel();
-        }
+        //if (Input.GetKeyDown(KeyCode.A))
+        //{
+        //    OpenModel();
+        //}
 
-        if (Input.GetKeyDown(KeyCode.S))
-        {
-            CloseModel();
-        }
+        //if (Input.GetKeyDown(KeyCode.S))
+        //{
+        //    CloseModel();
+        //}
     }
 
 

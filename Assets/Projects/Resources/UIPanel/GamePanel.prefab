@@ -892,7 +892,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &3434895998548534265
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1344,7 +1344,7 @@ MonoBehaviour:
   AppreciateButton: {fileID: 119034698647285375}
   ReturnButton: {fileID: 6817453615092357342}
   gamepanel: {fileID: 3434895999166649701}
-  starAniamtor: {fileID: 0}
+  starAniamtor: {fileID: 6917711801897620167}
 --- !u!225 &2519033079322263014
 CanvasGroup:
   m_ObjectHideFlags: 0

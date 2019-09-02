@@ -67,12 +67,12 @@ public class AppreciatePanel : BasePanel
                 {
                     if (i < WorksDisplayTextureArray.Length)
                     {
-                        ImageGroup[i].texture = WorksDisplayTextureArray[i];
+                        ImageGroup[i].texture = WorksDisplayTextureArray[WorksDisplayTextureArray.Length - 1-i];
                     }
                 }
             }
             ImageAddListen(ImageButtonGroup, Index);
-            DisplayRawImage.texture = WorksDisplayTextureArray[0];
+            DisplayRawImage.texture = WorksDisplayTextureArray[WorksDisplayTextureArray.Length - 1];
         }
 
     }
@@ -83,7 +83,7 @@ public class AppreciatePanel : BasePanel
             
             if(i + index < WorksDisplayTextureArray.Length && WorksDisplayTextureArray != null)
             {
-                DisplayRawImage.texture = WorksDisplayTextureArray[i + index];
+                DisplayRawImage.texture = WorksDisplayTextureArray[WorksDisplayTextureArray.Length - 1 - (i + index)];
             }
             AudioManager.PlayAudio("按键声音", transform, MTFrame.MTAudio.AudioEnunType.Effset);
             ChooseIngImage.localPosition = new Vector3(ChooseIngImageX[i], -372f, 0);
@@ -116,7 +116,7 @@ public class AppreciatePanel : BasePanel
             {
                 if (i < WorksDisplayTextureArray.Length)
                 {
-                    ImageGroup[i].texture = WorksDisplayTextureArray[i + Index];
+                    ImageGroup[i].texture = WorksDisplayTextureArray[WorksDisplayTextureArray.Length - 1 - (i + Index)];
                 }
             }
             ImageAddListen(ImageButtonGroup, Index);
@@ -138,7 +138,7 @@ public class AppreciatePanel : BasePanel
             {
                 if (i < WorksDisplayTextureArray.Length)
                 {
-                    ImageGroup[i].texture = WorksDisplayTextureArray[i + Index];
+                    ImageGroup[i].texture = WorksDisplayTextureArray[WorksDisplayTextureArray.Length - 1 - (i + Index)];
                 }
             }
             ImageAddListen(ImageButtonGroup, Index);

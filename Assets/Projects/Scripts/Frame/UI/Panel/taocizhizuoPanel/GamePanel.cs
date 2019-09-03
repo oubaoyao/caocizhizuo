@@ -126,9 +126,15 @@ public class GamePanel : BasePanel
         t.ReadPixels(new Rect(0.2f * Screen.width, 0.32f * Screen.height, 600, 600), 0, 0);
         t.Apply();
         WorksDataControl.Instance.WorksDisplayTexture.Add(t);
+        if(WorksDataControl.Instance.WorksDisplayTexture.Count > 15)
+        {
+            WorksDataControl.Instance.DeleteTexture();
+        }
         //二进制转换
         byte[] byt = t.EncodeToJPG();
         System.IO.File.WriteAllBytes(path, byt);
         ModelControl.Instance.CloseModel();
     }
+
+    
 }

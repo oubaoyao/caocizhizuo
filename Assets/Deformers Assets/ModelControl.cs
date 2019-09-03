@@ -294,7 +294,7 @@ public class ModelControl : MonoBehaviour
                 RaycastHit mHit;
                 if (Physics.Raycast(mRay, out mHit))
                 {
-                    Debug.Log("hit Point" + mHit.point);
+                    //Debug.Log("hit Point" + mHit.point);
                     //Debug.Log("LocalPos:" + Model.transform.InverseTransformPoint(mHit.point));
                     if(mHit.point.x > 0)
                     {

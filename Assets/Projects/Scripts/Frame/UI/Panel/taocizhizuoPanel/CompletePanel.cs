@@ -9,6 +9,7 @@ public class CompletePanel : BasePanel
     public Button RemakeButtom, AppreciateButton, ReturnButton;
     public GamePanel gamepanel;
     public Animator starAniamtor;
+    public RawImage DisplayRawImage;
 
     public override void InitFind()
     {
@@ -20,6 +21,7 @@ public class CompletePanel : BasePanel
         gamepanel = FindTool.FindParentComponent<GamePanel>(transform, "GamePanel");
 
         starAniamtor = FindTool.FindChildComponent<Animator>(transform, "BGImage/StarAnima");
+        DisplayRawImage = FindTool.FindChildComponent<RawImage>(transform, "DisplayGroup/DisplayRaw");
     }
 
     public override void InitEvent()
@@ -52,6 +54,7 @@ public class CompletePanel : BasePanel
         //Cursor.visible = false;
         starAniamtor.SetBool("newstate-starAnimation", true);
         starAniamtor.SetBool("starlooperanimation-newstate", false);
+        DisplayRawImage.texture = gamepanel.CurrentDisplayTexture2D;
     }
 
     public override void Hide()

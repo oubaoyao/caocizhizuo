@@ -23,11 +23,12 @@ public class ModelControl : MonoBehaviour
     public List<CurveData> curveDatas = new List<CurveData>();
     private Vector3 first= Vector3.zero,secent=Vector3.zero;
     private int CurveNumber = -1,EdgeNumber = -1;
-    private float AreaSize = 0.2f;
     public bool IsGameStart,IsRight,IsLeft;
 
-    public float min = 0.5f;
-    public float max = 1.4f;
+    private float min = 0.5f;
+    private float max = 1.3f;
+
+    private float min2, max2, min4, max4, interval = 0.005f;
 
     private float[] KeyGroup = { 0, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f, 1.0f };
 
@@ -38,6 +39,13 @@ public class ModelControl : MonoBehaviour
 
     void Start()
     {
+        min2 = 1 - (1 - min) / 2;
+        max2 = 1 + (max - 1) / 2;
+        Debug.Log("min2==" + min2);
+        Debug.Log("max2==" + max2);
+        min4 = (1 - (1 - min) / 4)/2;
+        max4 = (1 + (max - 1) / 4)/2;
+
         curve = Model.GetComponent<FlareDeformer>().Refinecurve;
         IsGameStart = IsRight = IsLeft = false;
         for (int i = 0; i < KeyGroup.Length; i++)
@@ -83,7 +91,7 @@ public class ModelControl : MonoBehaviour
         }
     }
 
-    public void Extruction(int index, float value = 0.01f, float area = 1.4f)//挤出
+    public void Extruction(int index, float value = 0.01f, float area = 1.3f)//挤出
     {
         float currentValue = curve.keys[index].value;
         while (currentValue <= area)
@@ -124,14 +132,41 @@ public class ModelControl : MonoBehaviour
                             if (IsLeft == true)
                             {
                                 Press(CurveNumber);
-                                Press(CurveNumber - 1, 0.005f,0.75f);
-                                Press(CurveNumber + 1, 0.005f, 0.75f);
+                                if(curve.keys[CurveNumber].value > min - 0.001)
+                                {
+                                    Press(CurveNumber - 1, interval, min2);
+                                    Press(CurveNumber + 1, interval, min2);
+                                }
+
+                                
+
+                                //if (CurveNumber - 2 >= 0)
+                                //{
+                                //    Press(CurveNumber - 2, interval, min4);
+                                //}
+                                //if (CurveNumber + 2 <= curve.keys.Length - 1)
+                                //{
+                                //    Press(CurveNumber + 2, interval, min4);
+                                //}
                             }
                             else if (IsRight == true)
                             {
                                 Extruction(CurveNumber);
-                                Extruction(CurveNumber - 1, 0.005f,1.2f);
-                                Extruction(CurveNumber + 1, 0.005f,1.2f);
+                                if(curve.keys[CurveNumber].value < max + 0.001)
+                                {
+                                    Extruction(CurveNumber - 1, interval, max2);
+                                    Extruction(CurveNumber + 1, interval, max2);
+                                }
+
+
+                                //if (CurveNumber - 2 >= 0)
+                                //{
+                                //    Extruction(CurveNumber - 2, interval, max4);
+                                //}
+                                //if (CurveNumber + 2 <= curve.keys.Length - 1)
+                                //{
+                                //    Extruction(CurveNumber + 2, interval, max4);
+                                //}
                             }
                         }
                         if (EdgeNumber != -1)
@@ -154,14 +189,39 @@ public class ModelControl : MonoBehaviour
                             if (IsLeft == true)
                             {
                                 Extruction(CurveNumber);
-                                Extruction(CurveNumber - 1, 0.005f,1.2f);
-                                Extruction(CurveNumber + 1, 0.005f,1.2f);
+                                if (curve.keys[CurveNumber].value < max + 0.001)
+                                {
+                                    Extruction(CurveNumber - 1, interval, max2);
+                                    Extruction(CurveNumber + 1, interval, max2);
+                                }
+
+
+                                //if (CurveNumber - 2 >= 0)
+                                //{
+                                //    Extruction(CurveNumber - 2, interval, max4);
+                                //}
+                                //if (CurveNumber + 2 <= curve.keys.Length - 1)
+                                //{
+                                //    Extruction(CurveNumber + 2, interval, max4);
+                                //}
                             }
                             else if (IsRight == true)
                             {
                                 Press(CurveNumber);
-                                Press(CurveNumber - 1, 0.005f,0.75f);
-                                Press(CurveNumber + 1, 0.005f,0.75f);
+                                if (curve.keys[CurveNumber].value > min - 0.001)
+                                {
+                                    Press(CurveNumber - 1, interval, min2);
+                                    Press(CurveNumber + 1, interval, min2);
+                                }
+
+                                //if(CurveNumber - 2 >= 0)
+                                //{
+                                //    Press(CurveNumber - 2, interval, min4);
+                                //}
+                                //if(CurveNumber + 2 <= curve.keys.Length - 1)
+                                //{
+                                //    Press(CurveNumber + 2, interval, min4);
+                                //}
                             }
                         }
                         if (EdgeNumber != -1)

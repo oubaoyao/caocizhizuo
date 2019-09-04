@@ -417,8 +417,6 @@ MonoBehaviour:
   IsGameStart: 0
   IsRight: 0
   IsLeft: 0
-  min: 0.5
-  max: 1.4
 --- !u!1 &534669902
 GameObject:
   m_ObjectHideFlags: 0
@@ -892,7 +890,6 @@ GameObject:
   - component: {fileID: 2938379265073261373}
   - component: {fileID: 2938379265075459584}
   - component: {fileID: 2938379265075459583}
-  - component: {fileID: 2938379265075459582}
   m_Layer: 0
   m_Name: Cylinder001
   m_TagString: Untagged
@@ -900,27 +897,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 0
---- !u!114 &2938379265075459582
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2938379265075459581}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: de07fc1e28161324995c1290b39a155c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  curve:
-    serializedVersion: 2
-    m_Curve: []
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  index: 0
-  min: 0.5
-  max: 1.4
 --- !u!114 &2938379265075459583
 MonoBehaviour:
   m_ObjectHideFlags: 0

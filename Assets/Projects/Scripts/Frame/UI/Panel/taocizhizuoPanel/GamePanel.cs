@@ -77,7 +77,7 @@ public class GamePanel : BasePanel
     public override void Open()
     {
         base.Open();
-        completePanel.Hide();
+
         OpenTips();
         ModelControl.Instance.IsGameStart = true;
         ModelControl.Instance.ResetModel();
@@ -89,7 +89,7 @@ public class GamePanel : BasePanel
     public override void Hide()
     {
         base.Hide();
-        
+        completePanel.Hide();
         ModelControl.Instance.IsGameStart = false;
         ModelControl.Instance.CloseModel();
         CloseTips();

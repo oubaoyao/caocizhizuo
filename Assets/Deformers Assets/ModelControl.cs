@@ -29,6 +29,8 @@ public class ModelControl : MonoBehaviour
     public float min = 0.5f;
     public float max = 1.4f;
 
+    private float[] KeyGroup = { 0, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f, 1.0f };
+
     private void Awake()
     {
         Instance = this;
@@ -38,129 +40,20 @@ public class ModelControl : MonoBehaviour
     {
         curve = Model.GetComponent<FlareDeformer>().Refinecurve;
         IsGameStart = IsRight = IsLeft = false;
-    }
-
-    private void ChangeKey(int index,int IsAdd)
-    {
-        float AddValue = 0;
-        if(curve.keys[index].value < 1)
+        for (int i = 0; i < KeyGroup.Length; i++)
         {
-            AddValue = 0.2f;
+            Keyframe keyframe = new Keyframe(KeyGroup[i], 1);
+            keyframe.tangentMode = 10;
+            curve.AddKey(keyframe);
         }
-        else if(curve.keys[index].value == 1)
-        {
-            if(IsAdd == -1)
-            {
-                AddValue = 0.2f;
-            }
-            else if(IsAdd == 1)
-            {
-                AddValue = 0.1f;
-            }       
-        }
-        else if(curve.keys[index].value > 1)
-        {
-            AddValue = 0.1f;
-        }
-
-        float Newvalue = curve.keys[index].value + AddValue * IsAdd;
-        if(Newvalue <= 0.4)
-        {
-            Debug.Log("value已经是最小，不能再小了！！");
-            return;
-        }
-        if(Newvalue == 1)
-        {
-            foreach ( CurveData item in curveDatas)
-            {
-                if(item.CenterKey.time.Equals(curve[index].time))
-                {
-                    curveDatas.Remove(item);
-                    Debug.Log("移除该点，复原该区域===" + curveDatas.Count);
-                    break;
-                    
-                }
-            }
-            Debug.Log("index==" + index);
-            if(index - 1 == 0)
-            {
-                for (int i = 0; i < 2; i++)
-                {
-                    curve.RemoveKey(index);
-                }
-            }
-            else
-            {
-                if(index == curve.keys.Length-2)
-                {
-                    for (int i = 0; i < 2; i++)
-                    {
-                        curve.RemoveKey(index - 1);
-                    }
-                }
-                else
-                {
-                    for (int i = 0; i < 3; i++)
-                    {
-                        curve.RemoveKey(index - 1);
-                    }
-                }
-            }
-            return;
-            
-        }
-        if(Newvalue >= 1.4)
-        {
-            Debug.Log("value已经是最大，不能再大了！！");
-            return;
-        }
-
-        float NewTime = curve.keys[index].time;
-        Debug.Log("当前value得值====" + Newvalue);
-        Keyframe centerkey2 = new Keyframe(time: NewTime, Newvalue);
-        curve.MoveKey(index, centerkey2);
-    }
-
-    private void ChangeEdge(int index,int Isadd)
-    {
-        float Newvalue = curve.keys[index].value + 0.1f * Isadd;
-        if(Newvalue >= 1.4f )
-        {
-            Newvalue = 1.4f;
-        }
-        else if(Newvalue <= 0.5f)
-        {
-            Newvalue = 0.5f;
-        }
-        float NewTime = curve.keys[index].time;
-        Keyframe keyframe = new Keyframe(time: NewTime, Newvalue);
-        curve.MoveKey(index, keyframe);
     }
 
     public void ResetModel()
     {
-        if (curve.keys.Length - 2 <= 0)
+        for (int i = 0; i < KeyGroup.Length; i++)
         {
-            Keyframe centerkey2 = new Keyframe(0, 1);
-            //Debug.Log(curve.keys[0].time);
-            curve.MoveKey(0, centerkey2);
-            centerkey2 = new Keyframe(1, 1);
-            curve.MoveKey(1, centerkey2);
-            return;
+            curve.MoveKey(i, new Keyframe(KeyGroup[i], 1));
         }
-            
-        int curvelenth = curve.keys.Length - 2;
-        for (int i = 0; i < curvelenth; i++)
-        {
-            curve.RemoveKey(1);
-        }
-        Keyframe centerkey3 = new Keyframe(0, 1);
-        //Debug.Log(curve.keys[0].time);
-        curve.MoveKey(0, centerkey3);
-        centerkey3 = new Keyframe(1, 1);
-        curve.MoveKey(1, centerkey3);
-        curveDatas.Clear();
-        CurveNumber = -1;
         Model.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
     }
 
@@ -176,13 +69,13 @@ public class ModelControl : MonoBehaviour
         dipan.transform.gameObject.SetActive(false);
     }
 
-    public void Press(int index)//按压
+    public void Press(int index,float value = 0.01f,float area = 0.5f)//按压
     {
         float currentValue = curve.keys[index].value;
-        while (currentValue >= min)
+        while (currentValue >= area)
         {
 
-            float newValue = curve.keys[index].value - 0.01f;
+            float newValue = curve.keys[index].value - value;
             float newTime = curve.keys[index].time;
             Keyframe keyFrame = new Keyframe(time: newTime, newValue);
             curve.MoveKey(index, keyFrame);
@@ -190,12 +83,12 @@ public class ModelControl : MonoBehaviour
         }
     }
 
-    public void Extruction(int index)//挤出
+    public void Extruction(int index, float value = 0.01f, float area = 1.4f)//挤出
     {
         float currentValue = curve.keys[index].value;
-        while (currentValue <= max)
+        while (currentValue <= area)
         {
-            float newValue = curve.keys[index].value + 0.01f;
+            float newValue = curve.keys[index].value + value;
             float newTime = curve.keys[index].time;
             Keyframe keyFrame = new Keyframe(time: newTime, newValue);
             curve.MoveKey(index, keyFrame);
@@ -225,16 +118,20 @@ public class ModelControl : MonoBehaviour
                     //Debug.Log("左右比上下幅度大");
                     if (newPos.x > oldPos.x)
                     {
-                        Debug.Log("向右");
+                        //Debug.Log("向右");
                         if (CurveNumber != -1)
                         {
                             if (IsLeft == true)
                             {
                                 Press(CurveNumber);
+                                Press(CurveNumber - 1, 0.005f,0.75f);
+                                Press(CurveNumber + 1, 0.005f, 0.75f);
                             }
                             else if (IsRight == true)
                             {
                                 Extruction(CurveNumber);
+                                Extruction(CurveNumber - 1, 0.005f,1.2f);
+                                Extruction(CurveNumber + 1, 0.005f,1.2f);
                             }
                         }
                         if (EdgeNumber != -1)
@@ -251,18 +148,21 @@ public class ModelControl : MonoBehaviour
                     }
                     else if (newPos.x < oldPos.x)
                     {
-                        Debug.Log("向左");
+                        //Debug.Log("向左");
                         if (CurveNumber != -1)
                         {
                             if (IsLeft == true)
                             {
                                 Extruction(CurveNumber);
+                                Extruction(CurveNumber - 1, 0.005f,1.2f);
+                                Extruction(CurveNumber + 1, 0.005f,1.2f);
                             }
                             else if (IsRight == true)
                             {
                                 Press(CurveNumber);
+                                Press(CurveNumber - 1, 0.005f,0.75f);
+                                Press(CurveNumber + 1, 0.005f,0.75f);
                             }
-
                         }
                         if (EdgeNumber != -1)
                         {
@@ -282,38 +182,27 @@ public class ModelControl : MonoBehaviour
                     //Debug.Log("上下比左右幅度大");
                     if (newPos.y > oldPos.y)
                     {
-                        Debug.Log("向上");
-                        //float temp = Model.transform.localScale.y;
-                        //temp += 0.1f;
+                        //Debug.Log("向上");
                         if (Model.transform.localScale.y > 1.5f)
                         {
-                            //Model.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
-                            //Model.transform.DOSizeY(1.5f, 1.0f, TweenMode.NoUnityTimeLineImpact);
                             Debug.Log("已经最大高度");
                         }
                         else
                         {
-                            //Model.transform.localScale = Vector3.Lerp(Model.transform.localScale, temp, 1.0f);
-                            //Model.transform.DOSizeY(temp, 1.0f, TweenMode.NoUnityTimeLineImpact);
-                            Model.transform.localScale += new Vector3(0, 0.01f, 0);
+                            Model.transform.localScale += new Vector3(0, 0.005f, 0);
                         }
                     }
                     else if (newPos.y < oldPos.y)
                     {
-                        Debug.Log("向下");
-                        //float temp = Model.transform.localScale.y;
-                        //temp -= 0.1f;
+                        //Debug.Log("向下");
                         if (Model.transform.localScale.y < 0.6)
                         {
-                            //Model.transform.localScale = new Vector3(1.5f, 0.6f, 1.5f);
+
                             Debug.Log("已经最小高度");
                         }
                         else
                         {
-                            //transform.localScale = temp;
-                            //Model.transform.localScale = Vector3.Lerp(Model.transform.localScale, temp, 1.0f);
-                            //Model.transform.DOSizeY(temp, 1.0f, TweenMode.NoUnityTimeLineImpact);
-                            Model.transform.localScale -= new Vector3(0, 0.01f, 0);
+                            Model.transform.localScale -= new Vector3(0, 0.005f, 0);
                         }
                     }
                 }
@@ -325,104 +214,6 @@ public class ModelControl : MonoBehaviour
 
             if (Input.GetMouseButtonUp(0))
             {
-                //secent = Input.mousePosition;
-
-                //if (Mathf.Abs(first.x - secent.x) > Mathf.Abs(first.y - secent.y))
-                //{
-                //    if (secent.x < first.x)
-                //    {
-                //        if (CurveNumber != -1)
-                //        {
-                //            if (IsLeft == true)
-                //            {
-                //                ChangeKey(CurveNumber, 1);
-                //            }
-                //            else if (IsRight == true)
-                //            {
-                //                ChangeKey(CurveNumber, -1);
-                //            }
-
-                //        }
-                //        if (EdgeNumber != -1)
-                //        {
-                //            if (IsLeft == true)
-                //            {
-                //                ChangeEdge(EdgeNumber, 1);
-                //            }
-                //            else if (IsRight == true)
-                //            {
-                //                ChangeEdge(EdgeNumber, -1);
-                //            }
-                //        }
-                //        Debug.Log("向左");
-                //    }
-
-                //    if (secent.x > first.x)
-                //    {
-                //        if (CurveNumber != -1)
-                //        {
-                //            if (IsLeft == true)
-                //            {
-                //                ChangeKey(CurveNumber, -1);
-                //            }
-                //            else if (IsRight == true)
-                //            {
-                //                ChangeKey(CurveNumber, 1);
-                //            }
-                //        }
-                //        if (EdgeNumber != -1)
-                //        {
-                //            if (IsLeft == true)
-                //            {
-                //                ChangeEdge(EdgeNumber, -1);
-                //            }
-                //            else if (IsRight == true)
-                //            {
-                //                ChangeEdge(EdgeNumber, 1);
-                //            }
-                //        }
-                //        Debug.Log("向右");
-                //    }
-                //}
-                //else
-                //{
-                //    if (secent.y < first.y)
-                //    {
-                //        //Vector3 temp = Model.transform.localScale;
-                //        //temp -= new Vector3(0, 0.1f, 0);
-                //        float temp = Model.transform.localScale.y;
-                //        temp -= 0.1f;
-                //        if (temp < 0.6)
-                //        {
-                //            //Model.transform.localScale = new Vector3(1.5f, 0.6f, 1.5f);
-                //            Model.transform.DOSizeY(0.6f, 1.0f, TweenMode.NoUnityTimeLineImpact);
-                //        }
-                //        else
-                //        {
-                //            //transform.localScale = temp;
-                //            //Model.transform.localScale = Vector3.Lerp(Model.transform.localScale, temp, 1.0f);
-                //            Model.transform.DOSizeY(temp, 1.0f, TweenMode.NoUnityTimeLineImpact);
-                //        }
-                //    }
-
-                //    if (secent.y > first.y)
-                //    {
-                //        float temp = Model.transform.localScale.y;
-                //        temp += 0.1f;
-                //        if (temp > 1.5f)
-                //        {
-                //            //Model.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
-                //            Model.transform.DOSizeY(1.5f, 1.0f, TweenMode.NoUnityTimeLineImpact);
-                //        }
-                //        else
-                //        {
-                //            //Model.transform.localScale = Vector3.Lerp(Model.transform.localScale, temp, 1.0f);
-                //            Model.transform.DOSizeY(temp, 1.0f, TweenMode.NoUnityTimeLineImpact);
-                //        }
-                //    }
-                //}
-
-                //first = secent;
                 CurveNumber = -1;
                 EdgeNumber = -1;
                 IsRight = IsLeft = false;
@@ -432,41 +223,28 @@ public class ModelControl : MonoBehaviour
             if (Input.GetMouseButtonDown(0))
             {
                 first = Input.mousePosition;
-                Debug.Log("1111");
+                //Debug.Log("1111");
                 Ray mRay = Camera.main.ScreenPointToRay(first);
                 RaycastHit mHit;
                 if (Physics.Raycast(mRay, out mHit))
                 {
-                    Debug.Log("hit Point" + mHit.point);
+                    //Debug.Log("hit Point" + mHit.point);
                     //Debug.Log("LocalPos:" + Model.transform.InverseTransformPoint(mHit.point));
                     if (mHit.point.x > 0)
                     {
                         IsRight = true;
-                        Debug.Log("IsRight==" + IsRight);
+                        //Debug.Log("IsRight==" + IsRight);
                     }
                     else if(mHit.point.x < 0)
                     {
                         IsLeft = true;
-                        Debug.Log("IsLeft==" + IsLeft);
+                        //Debug.Log("IsLeft==" + IsLeft);
                     }
                     Vector3 relativeVector3 = Model.transform.InverseTransformPoint(mHit.point);
 
                     float Proportion = (relativeVector3.y - 0.2f) / (5.4f - 0.2f);
-                    //Debug.Log(Proportion);
-                    float Time_leftkey = Proportion - AreaSize;
-                    float Time_rightkey = Proportion + AreaSize;
 
-                    if (Time_leftkey <= 0)
-                    {
-                        Time_leftkey = 0.15f;
-                    }
-
-                    if (Time_rightkey >= 1)
-                    {
-                        Time_rightkey = 0.9f;
-                    }
-
-                    if(Proportion > 0.9 )
+                    if(Proportion >= 0.95 )
                     {
                         EdgeNumber = curve.keys.Length - 1;
                         return;
@@ -476,62 +254,21 @@ public class ModelControl : MonoBehaviour
                         EdgeNumber = 0;
                         return;
                     }
-
-                    //Debug.Log("1111");
-                    //if (curveDatas.Count > 0)
-                    //{
-                    //    for (int i = 0; i < curveDatas.Count; i++)
-                    //    {
-                    //        //首先判断是否点在某个已经有了得范围里
-                    //        if (curveDatas[i].LeftKey.time <= Proportion && Proportion <= curveDatas[i].RightKey.time)
-                    //        {
-
-                    //            for (int j = 0; j < curve.keys.Length; j++)
-                    //            {
-                    //                if (curve.keys[j].time.Equals(curveDatas[i].CenterKey.time))
-                    //                {
-                    //                    CurveNumber = j;
-                    //                    Debug.Log("中心点已经存在");
-                    //                    return;
-                    //                }
-                    //            }
-                    //        }
-
-                    //        //判断左右两个key是否会生成在已有范围里
-                    //        if ((curveDatas[i].LeftKey.time <= Time_leftkey && Time_leftkey <= curveDatas[i].RightKey.time) ||
-                    //            (curveDatas[i].LeftKey.time <= Time_rightkey && Time_rightkey <= curveDatas[i].RightKey.time))
-                    //        {
-                    //            Debug.Log("左右点已经存在");
-                    //            return;
-                    //        }
-                    //    }
-                    //}
-
-                    //Keyframe leftKey = new Keyframe(Time_leftkey, 1.0f);
-                    //leftKey.tangentMode = 0x101 | 0x10001;
-                    //Keyframe rightKey = new Keyframe(Time_rightkey, 1.0f);
-                    //rightKey.tangentMode = 0x101 | 0x10001;
-                    Keyframe centerKey = new Keyframe(Proportion, 1.0f);
-                    centerKey.tangentMode = 10;
-
-                    //curve.AddKey(leftKey);
-                    //curve.AddKey(rightKey);
-                    curve.AddKey(centerKey);
-
-                    CurveData curveData = new CurveData();
-                    //curveData.LeftKey = leftKey;
-                    //curveData.RightKey = rightKey;
-                    curveData.CenterKey = centerKey;
-
-                    curveDatas.Add(curveData);
-                    for (int i = 0; i < curve.keys.Length; i++)
+                    else
                     {
-                        if(curve.keys[i].time.Equals(centerKey.time))
+                        for (int i = 0; i < KeyGroup.Length; i++)
                         {
-                            CurveNumber = i;
+                            if(i!=0&&i!=KeyGroup.Length-1)
+                            {
+                                if(Proportion - KeyGroup[i] <= 0.05)
+                                {
+                                    CurveNumber = i;
+                                    Debug.Log("当前区域===" + i);
+                                    return;
+                                }
+                            }
                         }
                     }
-                    Debug.Log("添加新的点");
 
                 }
             }

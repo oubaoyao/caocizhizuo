@@ -43,16 +43,16 @@ public class WorksDataControl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetMouseButtonUp(0))
-        {
-            TimeTool.Instance.AddDelayed(TimeDownType.NoUnityTimeLineImpact, 30.0f, BackMainMenu);
+        //if (Input.GetMouseButtonUp(0))
+        //{
+        //    TimeTool.Instance.AddDelayed(TimeDownType.NoUnityTimeLineImpact, 30.0f, BackMainMenu);
 
-        }
+        //}
 
-        if (Input.GetMouseButtonDown(0))
-        {
-            TimeTool.Instance.Remove(TimeDownType.NoUnityTimeLineImpact, BackMainMenu);
-        }
+        //if (Input.GetMouseButtonDown(0))
+        //{
+        //    TimeTool.Instance.Remove(TimeDownType.NoUnityTimeLineImpact, BackMainMenu);
+        //}
     }
 
     private void BackMainMenu()

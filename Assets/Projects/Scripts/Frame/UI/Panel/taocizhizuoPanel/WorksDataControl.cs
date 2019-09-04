@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Newtonsoft.Json;
 using System.IO;
+using System;
 
 public class WorksDataGroup
 {
@@ -42,7 +43,23 @@ public class WorksDataControl : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetMouseButtonUp(0))
+        {
+            TimeTool.Instance.AddDelayed(TimeDownType.NoUnityTimeLineImpact, 30.0f, BackMainMenu);
+
+        }
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            TimeTool.Instance.Remove(TimeDownType.NoUnityTimeLineImpact, BackMainMenu);
+        }
+    }
+
+    private void BackMainMenu()
+    {
+        TCZZState.SwitchPanel(MTFrame.MTEvent.SwitchPanelEnum.StartMenuPanel);
+        ModelControl.Instance.CloseModel();
+        GC.Collect();
     }
 
     public void SaveFile(string msg, string FilePath)

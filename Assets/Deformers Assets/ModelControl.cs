@@ -26,6 +26,9 @@ public class ModelControl : MonoBehaviour
     private float AreaSize = 0.2f;
     public bool IsGameStart,IsRight,IsLeft;
 
+    public float min = 0.5f;
+    public float max = 1.4f;
+
     private void Awake()
     {
         Instance = this;
@@ -139,7 +142,7 @@ public class ModelControl : MonoBehaviour
         if (curve.keys.Length - 2 <= 0)
         {
             Keyframe centerkey2 = new Keyframe(0, 1);
-            Debug.Log(curve.keys[0].time);
+            //Debug.Log(curve.keys[0].time);
             curve.MoveKey(0, centerkey2);
             centerkey2 = new Keyframe(1, 1);
             curve.MoveKey(1, centerkey2);
@@ -152,7 +155,7 @@ public class ModelControl : MonoBehaviour
             curve.RemoveKey(1);
         }
         Keyframe centerkey3 = new Keyframe(0, 1);
-        Debug.Log(curve.keys[0].time);
+        //Debug.Log(curve.keys[0].time);
         curve.MoveKey(0, centerkey3);
         centerkey3 = new Keyframe(1, 1);
         curve.MoveKey(1, centerkey3);
@@ -173,6 +176,35 @@ public class ModelControl : MonoBehaviour
         dipan.transform.gameObject.SetActive(false);
     }
 
+    public void Press(int index)//按压
+    {
+        float currentValue = curve.keys[index].value;
+        while (currentValue >= min)
+        {
+
+            float newValue = curve.keys[index].value - 0.01f;
+            float newTime = curve.keys[index].time;
+            Keyframe keyFrame = new Keyframe(time: newTime, newValue);
+            curve.MoveKey(index, keyFrame);
+            return;
+        }
+    }
+
+    public void Extruction(int index)//挤出
+    {
+        float currentValue = curve.keys[index].value;
+        while (currentValue <= max)
+        {
+            float newValue = curve.keys[index].value + 0.01f;
+            float newTime = curve.keys[index].time;
+            Keyframe keyFrame = new Keyframe(time: newTime, newValue);
+            curve.MoveKey(index, keyFrame);
+            return;
+        }
+    }
+
+
+    private Vector3 oldPos, newPos;
     // Update is called once per frame
     void Update()
     {
@@ -181,106 +213,216 @@ public class ModelControl : MonoBehaviour
             Model.transform.Rotate(Vector3.up*25);
             dipan.transform.Rotate(Vector3.forward * 25);
 
-            if (Input.GetMouseButtonUp(0))
+            newPos = Input.mousePosition;
+            if (oldPos == Vector3.zero)
             {
-                secent = Input.mousePosition;
 
-                if (Mathf.Abs(first.x - secent.x) > Mathf.Abs(first.y - secent.y))
+            }
+            else
+            {
+                if (Mathf.Abs(newPos.x - oldPos.x) > Mathf.Abs(newPos.y - oldPos.y))
                 {
-                    if (secent.x < first.x)
+                    //Debug.Log("左右比上下幅度大");
+                    if (newPos.x > oldPos.x)
                     {
-                        if(CurveNumber != -1)
+                        Debug.Log("向右");
+                        if (CurveNumber != -1)
                         {
-                            if(IsLeft == true)
+                            if (IsLeft == true)
                             {
-                                ChangeKey(CurveNumber, 1);
+                                Press(CurveNumber);
                             }
-                            else if(IsRight == true)
+                            else if (IsRight == true)
                             {
-                                ChangeKey(CurveNumber, -1);
+                                Extruction(CurveNumber);
                             }
-                            
                         }
                         if (EdgeNumber != -1)
                         {
                             if (IsLeft == true)
                             {
-                                ChangeEdge(EdgeNumber, 1);
+                                Press(EdgeNumber);
                             }
                             else if (IsRight == true)
                             {
-                                ChangeEdge(EdgeNumber, -1);
+                                Extruction(EdgeNumber);
                             }
                         }
-                        Debug.Log("向左");
                     }
-
-                    if (secent.x > first.x )
+                    else if (newPos.x < oldPos.x)
                     {
-                        if(CurveNumber != -1)
+                        Debug.Log("向左");
+                        if (CurveNumber != -1)
                         {
                             if (IsLeft == true)
                             {
-                                ChangeKey(CurveNumber, -1);
+                                Extruction(CurveNumber);
                             }
                             else if (IsRight == true)
                             {
-                                ChangeKey(CurveNumber, 1);
+                                Press(CurveNumber);
                             }
+
                         }
-                        if(EdgeNumber != -1)
+                        if (EdgeNumber != -1)
                         {
                             if (IsLeft == true)
                             {
-                                ChangeEdge(EdgeNumber, -1);
+                                Extruction(EdgeNumber);
                             }
                             else if (IsRight == true)
                             {
-                                ChangeEdge(EdgeNumber, 1);
+                                Press(EdgeNumber);
                             }
                         }
-                        Debug.Log("向右");
                     }
                 }
-                else
+                else if (Mathf.Abs(newPos.x - oldPos.x) < Mathf.Abs(newPos.y - oldPos.y))
                 {
-                    if (secent.y < first.y)
+                    //Debug.Log("上下比左右幅度大");
+                    if (newPos.y > oldPos.y)
                     {
-                        //Vector3 temp = Model.transform.localScale;
-                        //temp -= new Vector3(0, 0.1f, 0);
-                        float temp = Model.transform.localScale.y;
-                        temp -= 0.1f;
-                        if (temp < 0.6)
+                        Debug.Log("向上");
+                        //float temp = Model.transform.localScale.y;
+                        //temp += 0.1f;
+                        if (Model.transform.localScale.y > 1.5f)
+                        {
+                            //Model.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+                            //Model.transform.DOSizeY(1.5f, 1.0f, TweenMode.NoUnityTimeLineImpact);
+                            Debug.Log("已经最大高度");
+                        }
+                        else
+                        {
+                            //Model.transform.localScale = Vector3.Lerp(Model.transform.localScale, temp, 1.0f);
+                            //Model.transform.DOSizeY(temp, 1.0f, TweenMode.NoUnityTimeLineImpact);
+                            Model.transform.localScale += new Vector3(0, 0.01f, 0);
+                        }
+                    }
+                    else if (newPos.y < oldPos.y)
+                    {
+                        Debug.Log("向下");
+                        //float temp = Model.transform.localScale.y;
+                        //temp -= 0.1f;
+                        if (Model.transform.localScale.y < 0.6)
                         {
                             //Model.transform.localScale = new Vector3(1.5f, 0.6f, 1.5f);
-                            Model.transform.DOSizeY(0.6f, 1.0f, TweenMode.NoUnityTimeLineImpact);
+                            Debug.Log("已经最小高度");
                         }
                         else
                         {
                             //transform.localScale = temp;
                             //Model.transform.localScale = Vector3.Lerp(Model.transform.localScale, temp, 1.0f);
-                            Model.transform.DOSizeY(temp, 1.0f, TweenMode.NoUnityTimeLineImpact);
-                        }
-                    }
-
-                    if (secent.y > first.y)
-                    {
-                        float temp = Model.transform.localScale.y;
-                        temp += 0.1f;
-                        if (temp > 1.5f)
-                        {
-                            //Model.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
-                            Model.transform.DOSizeY(1.5f, 1.0f, TweenMode.NoUnityTimeLineImpact);
-                        }
-                        else
-                        {
-                            //Model.transform.localScale = Vector3.Lerp(Model.transform.localScale, temp, 1.0f);
-                            Model.transform.DOSizeY(temp, 1.0f, TweenMode.NoUnityTimeLineImpact);
+                            //Model.transform.DOSizeY(temp, 1.0f, TweenMode.NoUnityTimeLineImpact);
+                            Model.transform.localScale -= new Vector3(0, 0.01f, 0);
                         }
                     }
                 }
+                //Debug.Log("newPos== " + newPos);
+                //Debug.Log("oldPos==" + oldPos);
+                //Debug.Log("chazhi===" + (newPos - oldPos));
+            }
+            oldPos = newPos;
 
-                first = secent;
+            if (Input.GetMouseButtonUp(0))
+            {
+                //secent = Input.mousePosition;
+
+                //if (Mathf.Abs(first.x - secent.x) > Mathf.Abs(first.y - secent.y))
+                //{
+                //    if (secent.x < first.x)
+                //    {
+                //        if (CurveNumber != -1)
+                //        {
+                //            if (IsLeft == true)
+                //            {
+                //                ChangeKey(CurveNumber, 1);
+                //            }
+                //            else if (IsRight == true)
+                //            {
+                //                ChangeKey(CurveNumber, -1);
+                //            }
+
+                //        }
+                //        if (EdgeNumber != -1)
+                //        {
+                //            if (IsLeft == true)
+                //            {
+                //                ChangeEdge(EdgeNumber, 1);
+                //            }
+                //            else if (IsRight == true)
+                //            {
+                //                ChangeEdge(EdgeNumber, -1);
+                //            }
+                //        }
+                //        Debug.Log("向左");
+                //    }
+
+                //    if (secent.x > first.x)
+                //    {
+                //        if (CurveNumber != -1)
+                //        {
+                //            if (IsLeft == true)
+                //            {
+                //                ChangeKey(CurveNumber, -1);
+                //            }
+                //            else if (IsRight == true)
+                //            {
+                //                ChangeKey(CurveNumber, 1);
+                //            }
+                //        }
+                //        if (EdgeNumber != -1)
+                //        {
+                //            if (IsLeft == true)
+                //            {
+                //                ChangeEdge(EdgeNumber, -1);
+                //            }
+                //            else if (IsRight == true)
+                //            {
+                //                ChangeEdge(EdgeNumber, 1);
+                //            }
+                //        }
+                //        Debug.Log("向右");
+                //    }
+                //}
+                //else
+                //{
+                //    if (secent.y < first.y)
+                //    {
+                //        //Vector3 temp = Model.transform.localScale;
+                //        //temp -= new Vector3(0, 0.1f, 0);
+                //        float temp = Model.transform.localScale.y;
+                //        temp -= 0.1f;
+                //        if (temp < 0.6)
+                //        {
+                //            //Model.transform.localScale = new Vector3(1.5f, 0.6f, 1.5f);
+                //            Model.transform.DOSizeY(0.6f, 1.0f, TweenMode.NoUnityTimeLineImpact);
+                //        }
+                //        else
+                //        {
+                //            //transform.localScale = temp;
+                //            //Model.transform.localScale = Vector3.Lerp(Model.transform.localScale, temp, 1.0f);
+                //            Model.transform.DOSizeY(temp, 1.0f, TweenMode.NoUnityTimeLineImpact);
+                //        }
+                //    }
+
+                //    if (secent.y > first.y)
+                //    {
+                //        float temp = Model.transform.localScale.y;
+                //        temp += 0.1f;
+                //        if (temp > 1.5f)
+                //        {
+                //            //Model.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+                //            Model.transform.DOSizeY(1.5f, 1.0f, TweenMode.NoUnityTimeLineImpact);
+                //        }
+                //        else
+                //        {
+                //            //Model.transform.localScale = Vector3.Lerp(Model.transform.localScale, temp, 1.0f);
+                //            Model.transform.DOSizeY(temp, 1.0f, TweenMode.NoUnityTimeLineImpact);
+                //        }
+                //    }
+                //}
+
+                //first = secent;
                 CurveNumber = -1;
                 EdgeNumber = -1;
                 IsRight = IsLeft = false;
@@ -290,19 +432,22 @@ public class ModelControl : MonoBehaviour
             if (Input.GetMouseButtonDown(0))
             {
                 first = Input.mousePosition;
+                Debug.Log("1111");
                 Ray mRay = Camera.main.ScreenPointToRay(first);
                 RaycastHit mHit;
                 if (Physics.Raycast(mRay, out mHit))
                 {
-                    //Debug.Log("hit Point" + mHit.point);
+                    Debug.Log("hit Point" + mHit.point);
                     //Debug.Log("LocalPos:" + Model.transform.InverseTransformPoint(mHit.point));
-                    if(mHit.point.x > 0)
+                    if (mHit.point.x > 0)
                     {
                         IsRight = true;
+                        Debug.Log("IsRight==" + IsRight);
                     }
                     else if(mHit.point.x < 0)
                     {
                         IsLeft = true;
+                        Debug.Log("IsLeft==" + IsLeft);
                     }
                     Vector3 relativeVector3 = Model.transform.InverseTransformPoint(mHit.point);
 
@@ -332,53 +477,60 @@ public class ModelControl : MonoBehaviour
                         return;
                     }
 
-                    Debug.Log("1111");
-                    if (curveDatas.Count > 0)
-                    {
-                        for (int i = 0; i < curveDatas.Count; i++)
-                        {
-                            //首先判断是否点在某个已经有了得范围里
-                            if (curveDatas[i].LeftKey.time <= Proportion && Proportion <= curveDatas[i].RightKey.time)
-                            {
+                    //Debug.Log("1111");
+                    //if (curveDatas.Count > 0)
+                    //{
+                    //    for (int i = 0; i < curveDatas.Count; i++)
+                    //    {
+                    //        //首先判断是否点在某个已经有了得范围里
+                    //        if (curveDatas[i].LeftKey.time <= Proportion && Proportion <= curveDatas[i].RightKey.time)
+                    //        {
 
-                                for (int j = 0; j < curve.keys.Length; j++)
-                                {
-                                    if (curve.keys[j].time.Equals(curveDatas[i].CenterKey.time))
-                                    {
-                                        CurveNumber = j;
-                                        Debug.Log("中心点已经存在");
-                                        return;
-                                    }
-                                }
-                            }
+                    //            for (int j = 0; j < curve.keys.Length; j++)
+                    //            {
+                    //                if (curve.keys[j].time.Equals(curveDatas[i].CenterKey.time))
+                    //                {
+                    //                    CurveNumber = j;
+                    //                    Debug.Log("中心点已经存在");
+                    //                    return;
+                    //                }
+                    //            }
+                    //        }
 
-                            //判断左右两个key是否会生成在已有范围里
-                            if ((curveDatas[i].LeftKey.time <= Time_leftkey && Time_leftkey <= curveDatas[i].RightKey.time) ||
-                                (curveDatas[i].LeftKey.time <= Time_rightkey && Time_rightkey <= curveDatas[i].RightKey.time))
-                            {
-                                Debug.Log("左右点已经存在");
-                                return;
-                            }
-                        }
-                    }
+                    //        //判断左右两个key是否会生成在已有范围里
+                    //        if ((curveDatas[i].LeftKey.time <= Time_leftkey && Time_leftkey <= curveDatas[i].RightKey.time) ||
+                    //            (curveDatas[i].LeftKey.time <= Time_rightkey && Time_rightkey <= curveDatas[i].RightKey.time))
+                    //        {
+                    //            Debug.Log("左右点已经存在");
+                    //            return;
+                    //        }
+                    //    }
+                    //}
 
-                    Keyframe leftKey = new Keyframe(Time_leftkey, 1.0f);
-                    leftKey.tangentMode = 0x101 | 0x10001;
-                    Keyframe rightKey = new Keyframe(Time_rightkey, 1.0f);
-                    rightKey.tangentMode = 0x101 | 0x10001;
+                    //Keyframe leftKey = new Keyframe(Time_leftkey, 1.0f);
+                    //leftKey.tangentMode = 0x101 | 0x10001;
+                    //Keyframe rightKey = new Keyframe(Time_rightkey, 1.0f);
+                    //rightKey.tangentMode = 0x101 | 0x10001;
                     Keyframe centerKey = new Keyframe(Proportion, 1.0f);
                     centerKey.tangentMode = 10;
 
-                    curve.AddKey(leftKey);
-                    curve.AddKey(rightKey);
+                    //curve.AddKey(leftKey);
+                    //curve.AddKey(rightKey);
                     curve.AddKey(centerKey);
 
                     CurveData curveData = new CurveData();
-                    curveData.LeftKey = leftKey;
-                    curveData.RightKey = rightKey;
+                    //curveData.LeftKey = leftKey;
+                    //curveData.RightKey = rightKey;
                     curveData.CenterKey = centerKey;
 
                     curveDatas.Add(curveData);
+                    for (int i = 0; i < curve.keys.Length; i++)
+                    {
+                        if(curve.keys[i].time.Equals(centerKey.time))
+                        {
+                            CurveNumber = i;
+                        }
+                    }
                     Debug.Log("添加新的点");
 
                 }

@@ -414,6 +414,10 @@ MonoBehaviour:
     m_RotationOrder: 4
   curveDatas: []
   IsGameStart: 0
+  IsRight: 0
+  IsLeft: 0
+  min: 0.5
+  max: 1.4
 --- !u!1 &534669902
 GameObject:
   m_ObjectHideFlags: 0
@@ -887,6 +891,7 @@ GameObject:
   - component: {fileID: 7311515752037272885}
   - component: {fileID: 7311515752039207927}
   - component: {fileID: 7311515752039207926}
+  - component: {fileID: 7311515752039207928}
   m_Layer: 0
   m_Name: Cylinder001
   m_TagString: Untagged
@@ -948,6 +953,27 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 4.18366, y: 5.32903, z: 4.18365}
   m_Center: {x: 0.003419876, y: 2.746005, z: -0.00040507317}
+--- !u!114 &7311515752039207928
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7311515752039207925}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de07fc1e28161324995c1290b39a155c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  curve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  index: 0
+  min: 0.5
+  max: 1.4
 --- !u!4 &7311515752039698389
 Transform:
   m_ObjectHideFlags: 0

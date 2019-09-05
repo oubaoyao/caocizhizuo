@@ -43,6 +43,7 @@ public class GamePanel : BasePanel
 
         ConcirmButton.onClick.AddListener(() => {
             CloseTips();
+            startcreattiltle.Stop();
             AudioManager.PlayAudio("按键声音", transform, MTFrame.MTAudio.AudioEnunType.Effset);
             ModelControl.Instance.IsGameStart = false;
             string ImgName = Time.time.ToString();

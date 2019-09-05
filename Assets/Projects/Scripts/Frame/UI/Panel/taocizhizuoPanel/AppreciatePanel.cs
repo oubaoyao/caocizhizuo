@@ -41,10 +41,12 @@ public class AppreciatePanel : BasePanel
         base.InitEvent();
 
         Image_Right_Button.onClick.AddListener(() => {
+            AudioManager.PlayAudio("按键声音", transform, MTFrame.MTAudio.AudioEnunType.Effset);
             Right();
         });
 
         Image_Left_Button.onClick.AddListener(() => {
+            AudioManager.PlayAudio("按键声音", transform, MTFrame.MTAudio.AudioEnunType.Effset);
             Left();
         });
 

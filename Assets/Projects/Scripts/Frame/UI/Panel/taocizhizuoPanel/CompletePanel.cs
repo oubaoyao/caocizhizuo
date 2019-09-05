@@ -63,19 +63,21 @@ public class CompletePanel : BasePanel
         starAniamtor.SetBool("starlooperanimation-newstate", false);
         DisplayRawImage.texture = gamepanel.CurrentDisplayTexture2D;
         tiltle.Play();
-        TimeTool.Instance.AddDelayed(TimeDownType.NoUnityTimeLineImpact, 1.0f, Displayzhuangshi);
+        TimeTool.Instance.AddDelayed(TimeDownType.NoUnityTimeLineImpact, 3.0f, Displayzhuangshi);
         AudioManager.PlayAudio("陶瓷制作-星星出现", transform, MTFrame.MTAudio.AudioEnunType.Effset);
     }
 
     private void Displayzhuangshi()
     {
         zhuangshiCanvas.alpha = 1;
+        AudioManager.PlayAudio("勋章-正确的声音2", transform, MTFrame.MTAudio.AudioEnunType.Effset);
     }
 
     public override void Hide()
     {
         base.Hide();
         AudioManager.StopAudio("陶瓷制作-星星出现", transform, MTFrame.MTAudio.AudioEnunType.Effset);
+        AudioManager.StopAudio("勋章-正确的声音2", transform, MTFrame.MTAudio.AudioEnunType.Effset);
         starAniamtor.SetBool("newstate-starAnimation", false);
         starAniamtor.SetBool("starlooperanimation-newstate", true);
         tiltle.Stop();

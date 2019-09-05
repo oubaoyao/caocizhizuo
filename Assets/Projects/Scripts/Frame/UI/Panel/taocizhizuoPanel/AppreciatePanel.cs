@@ -14,6 +14,8 @@ public class AppreciatePanel : BasePanel
     public float[] ChooseIngImageX = { -268f, -133.28f, 1.0f, 134.1f, 267.7f };
     private RawImage DisplayRawImage;
 
+    public Animation Appreciatetiltle;
+
     private int Index = 0;
     private int CurrentModelNumber = 0;
 
@@ -30,6 +32,8 @@ public class AppreciatePanel : BasePanel
         ChooseIngImage = FindTool.FindChildNode(transform, "ChooseIng");
 
         DisplayRawImage = FindTool.FindChildComponent<RawImage>(transform, "xiangkuang/DisplayImage");
+
+        Appreciatetiltle = FindTool.FindChildComponent<Animation>(transform, "Appreciatetiltle");
     }
 
     public override void InitEvent()
@@ -54,6 +58,7 @@ public class AppreciatePanel : BasePanel
     public override void Open()
     {
         base.Open();
+        Appreciatetiltle.Play();
         ChooseIngImage.localPosition = new Vector3(-268f, -372f);
         Index = 0;
 
@@ -77,6 +82,12 @@ public class AppreciatePanel : BasePanel
             CurrentModelNumber = WorksDisplayTextureArray.Length - 1;
         }
 
+    }
+
+    public override void Hide()
+    {
+        base.Hide();
+        Appreciatetiltle.Stop();
     }
 
     void InitButtons(Button btn, int i, int index)

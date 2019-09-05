@@ -38,6 +38,9 @@ public class StartMenuPanel : BasePanel
 
         StartButton.SetBool("start", true);
         StartButton.SetBool("stop", false);
+
+        AudioManager.StopAudio("Little West - Lost In My View-背景音乐", transform, MTFrame.MTAudio.AudioEnunType.BGM);
+        AudioManager.PlayAudio("陶瓷制作-待机-财政司司长 gotjoy", transform, MTFrame.MTAudio.AudioEnunType.BGM, 0.25f, true);
     }
 
     public override void Hide()
@@ -45,6 +48,9 @@ public class StartMenuPanel : BasePanel
         base.Hide();
         tiltleAnimator.SetBool("newstate-tiltle", false);
         tiltleAnimator.SetBool("loopertiltle-Newstate", true);
+
+        AudioManager.StopAudio("陶瓷制作-待机-财政司司长 gotjoy", transform, MTFrame.MTAudio.AudioEnunType.BGM);
+        AudioManager.PlayAudio("Little West - Lost In My View-背景音乐", transform, MTFrame.MTAudio.AudioEnunType.BGM, 0.25f, true);
     }
 
     private void Update()

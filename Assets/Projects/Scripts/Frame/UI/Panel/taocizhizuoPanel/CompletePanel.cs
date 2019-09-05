@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using MTFrame;
 using UnityEngine.UI;
+using System;
 
 public class CompletePanel : BasePanel
 {
@@ -10,6 +11,8 @@ public class CompletePanel : BasePanel
     public GamePanel gamepanel;
     public Animator starAniamtor;
     public RawImage DisplayRawImage;
+    public Animation tiltle;
+    public CanvasGroup zhuangshiCanvas;
 
     public override void InitFind()
     {
@@ -22,6 +25,10 @@ public class CompletePanel : BasePanel
 
         starAniamtor = FindTool.FindChildComponent<Animator>(transform, "BGImage/StarAnima");
         DisplayRawImage = FindTool.FindChildComponent<RawImage>(transform, "DisplayGroup/DisplayRaw");
+
+        tiltle = FindTool.FindChildComponent<Animation>(transform, "tiltle");
+
+        zhuangshiCanvas = FindTool.FindChildComponent<CanvasGroup>(transform, "DisplayGroup/zhaungshi");
     }
 
     public override void InitEvent()
@@ -55,13 +62,25 @@ public class CompletePanel : BasePanel
         starAniamtor.SetBool("newstate-starAnimation", true);
         starAniamtor.SetBool("starlooperanimation-newstate", false);
         DisplayRawImage.texture = gamepanel.CurrentDisplayTexture2D;
+        tiltle.Play();
+        TimeTool.Instance.AddDelayed(TimeDownType.NoUnityTimeLineImpact, 1.0f, Displayzhuangshi);
+        AudioManager.PlayAudio("陶瓷制作-星星出现", transform, MTFrame.MTAudio.AudioEnunType.Effset);
+    }
+
+    private void Displayzhuangshi()
+    {
+        zhuangshiCanvas.alpha = 1;
     }
 
     public override void Hide()
     {
         base.Hide();
+        AudioManager.StopAudio("陶瓷制作-星星出现", transform, MTFrame.MTAudio.AudioEnunType.Effset);
         starAniamtor.SetBool("newstate-starAnimation", false);
         starAniamtor.SetBool("starlooperanimation-newstate", true);
+        tiltle.Stop();
+        TimeTool.Instance.Remove(TimeDownType.NoUnityTimeLineImpact, Displayzhuangshi);
+        zhuangshiCanvas.alpha = 0;
     }
 
 }

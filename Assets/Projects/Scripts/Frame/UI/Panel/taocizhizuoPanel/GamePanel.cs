@@ -13,6 +13,7 @@ public class GamePanel : BasePanel
     private string SaveImaPath = "saveImage";
     public CompletePanel completePanel;
     public Texture2D CurrentDisplayTexture2D;
+    public Animation startcreattiltle;
 
     public override void InitFind()
     {
@@ -28,6 +29,8 @@ public class GamePanel : BasePanel
         tips2Button = tips2.gameObject.GetComponent<Button>();
 
         completePanel = FindTool.FindChildComponent<CompletePanel>(transform, "CompletePanel");
+
+        startcreattiltle = FindTool.FindChildComponent<Animation>(transform, "startcreattiltle");
     }
 
     public override void InitEvent()
@@ -77,7 +80,8 @@ public class GamePanel : BasePanel
     public override void Open()
     {
         base.Open();
-
+        startcreattiltle.Play();
+        completePanel.Hide();
         OpenTips();
         ModelControl.Instance.IsGameStart = true;
         ModelControl.Instance.ResetModel();
@@ -92,6 +96,7 @@ public class GamePanel : BasePanel
         completePanel.Hide();
         ModelControl.Instance.IsGameStart = false;
         ModelControl.Instance.CloseModel();
+        startcreattiltle.Stop();
         CloseTips();
     }
 

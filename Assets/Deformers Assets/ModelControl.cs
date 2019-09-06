@@ -25,7 +25,7 @@ public class ModelControl : MonoBehaviour
     private int CurveNumber = -1,EdgeNumber = -1;
     public bool IsGameStart,IsRight,IsLeft;
 
-    private float min = 0.5f;
+    private float min = 0.4f;
     private float max = 1.3f;
 
     private float min2, max2, min4, max4, interval = 0.005f;
@@ -41,18 +41,20 @@ public class ModelControl : MonoBehaviour
     {
         min2 = 1 - (1 - min) / 2;
         max2 = 1 + (max - 1) / 2;
-        Debug.Log("min2==" + min2);
-        Debug.Log("max2==" + max2);
-        min4 = (1 - (1 - min) / 4)/2;
-        max4 = (1 + (max - 1) / 4)/2;
+        //Debug.Log("min2==" + min2);
+        //Debug.Log("max2==" + max2);
+        //min4 = (1 - (1 - min) / 4)/2;
+        //max4 = (1 + (max - 1) / 4)/2;
 
         curve = Model.GetComponent<FlareDeformer>().Refinecurve;
         IsGameStart = IsRight = IsLeft = false;
         for (int i = 0; i < KeyGroup.Length; i++)
         {
             Keyframe keyframe = new Keyframe(KeyGroup[i], 1);
-            keyframe.tangentMode = 10;
+            //keyframe.weightedMode = WeightedMode.Out;
+            //keyframe.tangentMode = 10;
             curve.AddKey(keyframe);
+            
         }
     }
 
@@ -77,7 +79,7 @@ public class ModelControl : MonoBehaviour
         dipan.transform.gameObject.SetActive(false);
     }
 
-    public void Press(int index,float value = 0.01f,float area = 0.5f)//按压
+    public void Press(int index,float value = 0.01f,float area = 0.4f)//按压
     {
         float currentValue = curve.keys[index].value;
         while (currentValue >= area)
@@ -87,6 +89,7 @@ public class ModelControl : MonoBehaviour
             float newTime = curve.keys[index].time;
             Keyframe keyFrame = new Keyframe(time: newTime, newValue);
             curve.MoveKey(index, keyFrame);
+            curve.SmoothTangents(index, 0);
             return;
         }
     }
@@ -100,6 +103,7 @@ public class ModelControl : MonoBehaviour
             float newTime = curve.keys[index].time;
             Keyframe keyFrame = new Keyframe(time: newTime, newValue);
             curve.MoveKey(index, keyFrame);
+            curve.SmoothTangents(index, 0);
             return;
         }
     }
@@ -111,8 +115,8 @@ public class ModelControl : MonoBehaviour
     {
         if(IsGameStart)
         {
-            Model.transform.Rotate(Vector3.up*25);
-            dipan.transform.Rotate(Vector3.forward * 25);
+            Model.transform.Rotate(Vector3.up*13);
+            dipan.transform.Rotate(Vector3.forward * 13);
 
             newPos = Input.mousePosition;
             if (oldPos == Vector3.zero)

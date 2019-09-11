@@ -12,7 +12,7 @@ public class GamePanel : BasePanel
     public CanvasGroup tips1, tips2, Handtips;
     private string SaveImaPath = "saveImage";
     public CompletePanel completePanel;
-    public Texture2D CurrentDisplayTexture2D;
+    //public Texture2D CurrentDisplayTexture2D;
     public Animation startcreattiltle;
 
     public override void InitFind()
@@ -133,7 +133,7 @@ public class GamePanel : BasePanel
         //按照设定区域读取像素；注意是以左下角为原点读取
         t.ReadPixels(new Rect(0.2f * Screen.width, 0.32f * Screen.height, 600, 600), 0, 0);
         t.Apply();
-        CurrentDisplayTexture2D = t;
+        //CurrentDisplayTexture2D = t;
         WorksDataControl.Instance.WorksDisplayTexture.Add(t);
         if(WorksDataControl.Instance.WorksDisplayTexture.Count > 15)
         {
@@ -142,7 +142,8 @@ public class GamePanel : BasePanel
         //二进制转换
         byte[] byt = t.EncodeToJPG();
         System.IO.File.WriteAllBytes(path, byt);
-        ModelControl.Instance.CloseModel();
+        //ModelControl.Instance.CloseModel();
+        ModelControl.Instance.DisplayPanelSetting();
         completePanel.Open();
     }
 

@@ -10,7 +10,7 @@ public class CompletePanel : BasePanel
     public Button RemakeButtom, AppreciateButton, ReturnButton;
     public GamePanel gamepanel;
     public Animator starAniamtor;
-    public RawImage DisplayRawImage;
+    //public RawImage DisplayRawImage;
     public Animation tiltle;
     public CanvasGroup zhuangshiCanvas;
 
@@ -24,7 +24,7 @@ public class CompletePanel : BasePanel
         gamepanel = FindTool.FindParentComponent<GamePanel>(transform, "GamePanel");
 
         starAniamtor = FindTool.FindChildComponent<Animator>(transform, "BGImage/StarAnima");
-        DisplayRawImage = FindTool.FindChildComponent<RawImage>(transform, "DisplayGroup/DisplayRaw");
+        //DisplayRawImage = FindTool.FindChildComponent<RawImage>(transform, "DisplayGroup/DisplayRaw");
 
         tiltle = FindTool.FindChildComponent<Animation>(transform, "tiltle");
 
@@ -61,10 +61,17 @@ public class CompletePanel : BasePanel
         //Cursor.visible = false;
         starAniamtor.SetBool("newstate-starAnimation", true);
         starAniamtor.SetBool("starlooperanimation-newstate", false);
-        DisplayRawImage.texture = gamepanel.CurrentDisplayTexture2D;
+        //DisplayRawImage.texture = gamepanel.CurrentDisplayTexture2D;
         tiltle.Play();
         TimeTool.Instance.AddDelayed(TimeDownType.NoUnityTimeLineImpact, 3.0f, Displayzhuangshi);
         AudioManager.PlayAudio("陶瓷制作-星星出现", transform, MTFrame.MTAudio.AudioEnunType.Effset);
+        EventManager.AddUpdateListener(MTFrame.MTEvent.UpdateEventEnumType.Update, "Bupdate", Bupdate);
+    }
+
+    private void Bupdate(float timeProcess)
+    {
+        ModelControl.Instance.Model.transform.Rotate(Vector3.up * 7);
+        ModelControl.Instance.dipan.transform.Rotate(Vector3.forward * 7);
     }
 
     private void Displayzhuangshi()
@@ -76,6 +83,7 @@ public class CompletePanel : BasePanel
     public override void Hide()
     {
         base.Hide();
+        EventManager.RemoveUpdateListener(MTFrame.MTEvent.UpdateEventEnumType.Update, "Bupdate", Bupdate);
         AudioManager.StopAudio("陶瓷制作-星星出现", transform, MTFrame.MTAudio.AudioEnunType.Effset);
         AudioManager.StopAudio("勋章-正确的声音2", transform, MTFrame.MTAudio.AudioEnunType.Effset);
         starAniamtor.SetBool("newstate-starAnimation", false);

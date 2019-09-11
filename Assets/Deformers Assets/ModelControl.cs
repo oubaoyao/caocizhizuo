@@ -32,6 +32,8 @@ public class ModelControl : MonoBehaviour
 
     private float[] KeyGroup = { 0, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f, 1.0f };
 
+    private Vector3 ModelLocalPosition, ModelLocalScale, dipanLocalPosition, dipanLocalScale;
+
     private void Awake()
     {
         Instance = this;
@@ -45,6 +47,11 @@ public class ModelControl : MonoBehaviour
         //Debug.Log("max2==" + max2);
         //min4 = (1 - (1 - min) / 4)/2;
         //max4 = (1 + (max - 1) / 4)/2;
+        ModelLocalPosition = Model.transform.localPosition;
+        ModelLocalScale = Model.transform.localScale;
+
+        dipanLocalPosition = dipan.transform.localPosition;
+        dipanLocalScale = dipan.transform.localScale;
 
         curve = Model.GetComponent<FlareDeformer>().Refinecurve;
         IsGameStart = IsRight = IsLeft = false;
@@ -64,7 +71,11 @@ public class ModelControl : MonoBehaviour
         {
             curve.MoveKey(i, new Keyframe(KeyGroup[i], 1));
         }
-        Model.transform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+        Model.transform.localScale = ModelLocalScale;
+        Model.transform.localPosition = ModelLocalPosition;
+
+        dipan.transform.localScale = dipanLocalScale;
+        dipan.transform.localPosition = dipanLocalPosition;
     }
 
     public void OpenModel()
@@ -108,6 +119,15 @@ public class ModelControl : MonoBehaviour
         }
     }
 
+    public void DisplayPanelSetting()
+    {
+        Model.transform.localScale = Model.transform.localScale * 0.6f;
+        dipan.transform.localScale = dipan.transform.localScale * 0.6f;
+
+        Model.transform.localPosition -= new Vector3(0, 0.6599f, 0.51f);
+        dipan.transform.localPosition -= new Vector3(0, 0.6599f, 0);
+    }
+
 
     private Vector3 oldPos, newPos;
     // Update is called once per frame
@@ -115,8 +135,8 @@ public class ModelControl : MonoBehaviour
     {
         if(IsGameStart)
         {
-            Model.transform.Rotate(Vector3.up*13);
-            dipan.transform.Rotate(Vector3.forward * 13);
+            Model.transform.Rotate(Vector3.up*7);
+            dipan.transform.Rotate(Vector3.forward * 7);
 
             newPos = Input.mousePosition;
             if (oldPos == Vector3.zero)
